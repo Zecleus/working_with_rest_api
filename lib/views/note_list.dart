@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:working_with_rest_api/models/note_for_listing.dart';
+import 'package:working_with_rest_api/views/note_delete.dart';
+
+import 'note_modify.dart';
 // ignore_for_file: prefer_const_constructors
 
 class NoteList extends StatelessWidget {
@@ -37,7 +40,10 @@ class NoteList extends StatelessWidget {
         title: Text('List of notes'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => NoteModify()));
+        },
         child: Icon(Icons.add),
       ),
       body: ListView.separated(
@@ -46,13 +52,39 @@ class NoteList extends StatelessWidget {
           color: Colors.green,
         ),
         itemBuilder: (_, index) {
-          return ListTile(
-            title: Text(
-              notes[index].noteTitle!,
-              style: TextStyle(color: Theme.of(context).primaryColor),
+          return Dismissible(
+            key: ValueKey(notes[index].noteID),
+            direction: DismissDirection.startToEnd,
+            onDismissed: (direction) {},
+            confirmDismiss: (direction) async {
+              final result = await showDialog(
+                  context: context, builder: (_) => NoteDelete());
+
+              return result;
+            },
+            background: Container(
+              color: Colors.red,
+              padding: EdgeInsets.only(left: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
             ),
-            subtitle: Text(
-                'Last edited on ${formatDateTime(notes[index].latestEditDateTime!)}'),
+            child: ListTile(
+              title: Text(
+                notes[index].noteTitle!,
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              subtitle: Text(
+                  'Last edited on ${formatDateTime(notes[index].latestEditDateTime!)}'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => NoteModify(noteID: notes[index].noteID)));
+              },
+            ),
           );
         },
         itemCount: notes.length,
