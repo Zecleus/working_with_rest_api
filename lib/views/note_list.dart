@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:working_with_rest_api/models/note_for_listing.dart';
+import 'package:working_with_rest_api/services/notes_service.dart';
 import 'package:working_with_rest_api/views/note_delete.dart';
 
 import 'note_modify.dart';
 // ignore_for_file: prefer_const_constructors
 
-class NoteList extends StatelessWidget {
+class NoteList extends StatefulWidget {
   NoteList({Key? key}) : super(key: key);
 
-  final notes = [
-    NoteForListing(
-      noteID: "1",
-      createDateTime: DateTime.now(),
-      latestEditDateTime: DateTime.now(),
-      noteTitle: "Note 1",
-    ),
-    NoteForListing(
-      noteID: "2",
-      createDateTime: DateTime.now(),
-      latestEditDateTime: DateTime.now(),
-      noteTitle: "Note 2",
-    ),
-    NoteForListing(
-      noteID: "3",
-      createDateTime: DateTime.now(),
-      latestEditDateTime: DateTime.now(),
-      noteTitle: "Note 3",
-    ),
-  ];
+  @override
+  State<NoteList> createState() => _NoteListState();
+}
+
+class _NoteListState extends State<NoteList> {
+  NotesService get service => GetIt.instance<NotesService>();
+  List<NoteForListing> notes = [];
 
   String formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+
+  @override
+  void initState() {
+    notes = service.getNotesList();
+    super.initState();
   }
 
   @override
