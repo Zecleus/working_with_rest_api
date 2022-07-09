@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:working_with_rest_api/models/api_response.dart';
@@ -93,12 +95,13 @@ class _NoteListState extends State<NoteList> {
 
                     var message;
 
-                    if (deleteResult != null && deleteResult.data == true) {
+                    if (deleteResult.data == true) {
                       message = 'The note was deleted successfully';
                     } else {
                       message = deleteResult.errorMessage ?? 'An error occured';
                     }
 
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(message),
