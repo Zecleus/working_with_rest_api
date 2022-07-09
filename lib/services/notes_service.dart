@@ -9,7 +9,10 @@ import '../models/note.dart';
 
 class NotesService {
   static const API = 'https://tq-notes-api-jkrgrdggbq-el.a.run.app';
-  static const headers = {'apiKey': 'b9572336-5f82-427f-a303-cbe7c92c8611'};
+  static const headers = {
+    'apiKey': 'b9572336-5f82-427f-a303-cbe7c92c8611',
+    'Content-Type': 'application/json'
+  };
 
   Future<APIResponse<List<NoteForListing>>> getNotesList() {
     // ignore: prefer_interpolation_to_compose_strings
@@ -47,7 +50,8 @@ class NotesService {
   Future<APIResponse<bool>> createNote(NoteInsert item) {
     return http
         // ignore: prefer_interpolation_to_compose_strings
-        .post(Uri.parse(API + '/notes'), headers: headers, body: item.toJson())
+        .post(Uri.parse(API + '/notes'),
+            headers: headers, body: json.encode(item.toJson()))
         .then((data) {
       if (data.statusCode == 201) {
         return APIResponse<bool>(data: true);

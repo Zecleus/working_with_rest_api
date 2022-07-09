@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:working_with_rest_api/models/note_insert.dart';
 import 'package:working_with_rest_api/services/notes_service.dart';
 
 import '../models/note.dart';
@@ -79,13 +80,46 @@ class _NoteModifyState extends State<NoteModify> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (isEditing) {
                           //update note in api
                         } else {
-                          //create note in api
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          final note = NoteInsert(
+                              noteTitle: _titleController.text,
+                              noteContent: _contentController.text);
+                          final result = await notesService.createNote(note);
+
+                          setState(() {
+                            _isLoading = true;
+                          });
+
+                          final title = 'Done';
+                          final text = result.error!
+                              ? (result.errorMessage ?? 'An error occured')
+                              : 'Your note was created';
+
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text(title),
+                              content: Text(text),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('OK'))
+                              ],
+                            ),
+                          ).then((data) {
+                            if (result.data!) {
+                              Navigator.of(context).pop();
+                            }
+                          });
                         }
-                        Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
                           primary: Theme.of(context).primaryColor),
