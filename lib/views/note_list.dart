@@ -50,14 +50,23 @@ class _NoteListState extends State<NoteList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => NoteModify()));
+              .push(
+            MaterialPageRoute(
+              builder: (_) => NoteModify(),
+            ),
+          )
+              .then((_) {
+            _fetchNotes();
+          });
         },
         child: Icon(Icons.add),
       ),
       body: Builder(
         builder: (_) {
           if (_isLoading) {
-            return CircularProgressIndicator();
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           if (_apiResponse!.error!) {
